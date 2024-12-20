@@ -4,12 +4,12 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1a1a1a;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: url("https://sovdcheck.sovd.it/assets/background-dark.7237b9d1.jpeg");
     --foreground: #ededed;
   }
 }

@@ -1,0 +1,57 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+}
+
+.up {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 25vh;
+}
+
+.up h1 {
+    text-align: center;
+    font-size: 6rem;
+    font-weight: 900;
+}
+
+.down {
+    display: flex;
+    height: 100%;
+}
+
+.down h1 {
+    font-size: 8rem;
+    font-weight: 900;
+}
+
+.left, .right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50vw;
+    gap: 1rem;
+}
+
+.left {
+    background-color: #4fc145;
+}
+
+.right {
+    background-color: #c22f2f;
+}
+
+p {
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+@media only screen and (max-width: 1200px) {
+    .up h1, .down h1 {
+        font-size: 2rem;
+    }
+}

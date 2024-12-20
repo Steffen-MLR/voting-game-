@@ -1,0 +1,67 @@
+.content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.left {
+    width: 30vw;
+    gap: 2rem;
+}
+
+.right {
+    width: 70vw;
+    gap: 0.8rem;
+}
+
+.left, .right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr-code {
+    gap: 5rem;
+    text-align: center;
+    border: 3px solid white;
+}
+
+.button {
+    background-color: #C1001F;
+    padding: 0.4rem 0.8rem;
+    border-radius: 5px;
+    font-size: 2rem;
+}
+
+input {
+    color: black;
+    font-size: 2rem;
+    padding: 0.1rem 0.2rem;
+}
+
+.question-input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.question {
+    width: 40rem;
+}
+
+.voteA, .voteB {
+    width: 15rem;
+}
+
+.add-question {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
