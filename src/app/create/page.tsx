@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 
-type Question = {
+export type Question = {
     id: number;
     question: string;
     voteA: string;
@@ -59,9 +59,9 @@ const CreatePage = () => {
                     <QRCode
                         className="qr-code"
                         size={512}
-                        value={`${process.env.NEXT_PUBLIC_DOMAIN}/ask?code=${code}&data=${btoa(JSON.stringify(questions))}`}
+                        value={`${process.env.NEXT_PUBLIC_DOMAIN}/host?data=${btoa(JSON.stringify(questions))}`}
                     />
-                    <a className="button" href={`${process.env.NEXT_PUBLIC_DOMAIN}/ask?code=${code}`}>Create Game</a>
+                    {process.env.NODE_ENV === 'development' && <a className="button" href={`${process.env.NEXT_PUBLIC_DOMAIN}/host?data=${btoa(JSON.stringify(questions))}`}>Create Game</a>}
                 </div>
                 <div className="right">
                     {Object.values(questions).map((q: Question) => {

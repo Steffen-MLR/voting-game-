@@ -1,11 +1,15 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import './page.css';
+import { useSearchParams } from 'next/navigation';
 
 const AnswerPage = () => {
+    const searchParams = useSearchParams();
+    const lobbyCode = searchParams.get('lobby');
+    
     const [selectedSide, setSelectedSide] = useState<string>('');
     const [socket, setSocket] = useState<WebSocket | null>(null);
-    const [errorMessage, setErrorMessage] = useState<string>('');
+    const [waitingForHost, setWaitingForHost] = useState<boolean>(true);
     const [question, setQuestion] = useState<string>();
     const [voteA, setVoteA] = useState<string>();
     const [voteB, setVoteB] = useState<string>();
@@ -19,21 +23,23 @@ const AnswerPage = () => {
             setClientId(newClientId);
         }
 
-        const socketConnection = new WebSocket('ws://localhost:8080');
+        const socketConnection = new WebSocket(`${process.env.NEXT_PUBLIC_WEB_SOCKET}?lobby=${lobbyCode}&clientId=${localStorage.getItem('clientId')}`);
         setSocket(socketConnection);
 
         socketConnection.onmessage = (event: MessageEvent) => {
             const data = JSON.parse(event.data);
-            if (data.type === 'error') {
-                setErrorMessage(data.message);
-            }
-            else if (data.type === 'votes-resetted') {
+            if (data.type === 'votes-resetted') {
                 setSelectedSide('');
             }
-            else if (data.type === 'question-changed') {
+            else if (data.type === 'question-changed' || data.type === 'current-question') {
+                if (data.question) {
+                    setWaitingForHost(false);
+                }
                 setQuestion(data.question);
                 setVoteA(data.voteA);
                 setVoteB(data.voteB);
+            } else if (data.type === 'my-vote') {
+                setSelectedSide(data.vote);
             }
         };
 
@@ -43,7 +49,7 @@ const AnswerPage = () => {
     }, []);
 
     const handleVote = (side: string) => {
-        if (socket) {
+        if (socket && !waitingForHost) {
             socket.send(JSON.stringify({ type: 'vote', vote: side, clientId: clientId }));
             setSelectedSide(side);
         }
@@ -52,19 +58,18 @@ const AnswerPage = () => {
     return (
         <div className="content">
             <div className="up">
-                <h1>{question}</h1>
+                <h1>{waitingForHost ? 'Warte auf Host...' : question}</h1>
             </div>
             <div className="down">
-                <div className="left" onClick={() => handleVote('yes')}>
+                <div className="left" onClick={() => handleVote('a')}>
                     <h1>{voteA}</h1>
-                    <p style={{ display: selectedSide === 'yes' ? 'block' : 'none' }}>Du hast Ja gewählt.</p>
+                    <p style={{ display: selectedSide === 'a' ? 'block' : 'none' }}>Du hast Ja gewählt.</p>
                 </div>
-                <div className="right" onClick={() => handleVote('no')}>
+                <div className="right" onClick={() => handleVote('b')}>
                     <h1>{voteB}</h1>
-                    <p style={{ display: selectedSide === 'no' ? 'block' : 'none' }}>Du hast Nein gewählt.</p>
+                    <p style={{ display: selectedSide === 'b' ? 'block' : 'none' }}>Du hast Nein gewählt.</p>
                 </div>
             </div>
-            {errorMessage && <div className="error">{errorMessage}</div>}
         </div>
     );
 };
