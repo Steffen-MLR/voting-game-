@@ -36,7 +36,7 @@ const CreatePage = () => {
     }
 
     function addQuestion() {
-        const questionsArray = Object.values(questions)
+        const questionsArray = Object.values(questions);
         const lastQuestionId: number = questionsArray.map(q => q.id).sort()[questionsArray.length - 1] ?? 0;
         updateQuestion(lastQuestionId+1, {id: lastQuestionId+1, question: '', voteA: 'Ja', voteB: 'Nein'});
     }
@@ -49,7 +49,7 @@ const CreatePage = () => {
     }
 
     useEffect(() => {
-        setCode(randomString(30))
+        setCode(randomString(30));
     }, [])
 
     return (
@@ -59,9 +59,9 @@ const CreatePage = () => {
                     <QRCode
                         className="qr-code"
                         size={512}
-                        value={`http://localhost:3000/ask?code=${code}&data=${btoa(JSON.stringify(questions))}`}
+                        value={`${process.env.NEXT_PUBLIC_DOMAIN}/ask?code=${code}&data=${btoa(JSON.stringify(questions))}`}
                     />
-                    <a className="button" href={`http://localhost:3000/ask?code=${code}`}>Create Game</a>
+                    <a className="button" href={`${process.env.NEXT_PUBLIC_DOMAIN}/ask?code=${code}`}>Create Game</a>
                 </div>
                 <div className="right">
                     {Object.values(questions).map((q: Question) => {
