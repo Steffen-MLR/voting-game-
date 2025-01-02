@@ -12,8 +12,8 @@ const HostPage = () => {
         window.history.replaceState(null, '', '/host');
     }
 
-    const [yesVotes, setYesVotes] = useState<number>(0);
-    const [noVotes, setNoVotes] = useState<number>(0);
+    const [aVotes, setAVotes] = useState<number>(0);
+    const [bVotes, setBVotes] = useState<number>(0);
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [customQuestion, setCustomQuestion] = useState<string>();
     const [customVoteA, setCustomVoteA] = useState<string>("Ja");
@@ -42,8 +42,8 @@ const HostPage = () => {
         socketConnection.onmessage = (event: MessageEvent) => {
             const data = JSON.parse(event.data);
             if (data.type === 'votes') {
-                setYesVotes(data.yesVotes);
-                setNoVotes(data.noVotes);
+                setAVotes(data.aVotes);
+                setBVotes(data.bVotes);
             } else if (data.type === 'question-changed') {
                 setQuestion(data.question);
                 setVoteA(data.voteA);
@@ -76,8 +76,8 @@ const HostPage = () => {
                             </div>
                             <div className="info-right">
                                 <h1>Stimmen</h1>
-                                {voteA}: {yesVotes}<br/>
-                                {voteB}: {noVotes}
+                                {voteA}: {aVotes}<br/>
+                                {voteB}: {bVotes}
                             </div>
                         </div>
                         <div className="info-bottom">

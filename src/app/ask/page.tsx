@@ -13,8 +13,8 @@ const AskPage = () => {
         window.history.replaceState(null, '', '/ask');
     }
 
-    const [yesVotes, setYesVotes] = useState<number>(0);
-    const [noVotes, setNoVotes] = useState<number>(0);
+    const [aVotes, setAVotes] = useState<number>(0);
+    const [bVotes, setBVotes] = useState<number>(0);
     const [question, setQuestion] = useState<string>('');
     const [voteA, setVoteA] = useState<string>();
     const [voteB, setVoteB] = useState<string>();
@@ -27,8 +27,8 @@ const AskPage = () => {
         socketConnection.onmessage = (event: MessageEvent) => {
             const data = JSON.parse(event.data);
             if (data.type === 'votes') {
-                setYesVotes(data.yesVotes);
-                setNoVotes(data.noVotes);
+                setAVotes(data.aVotes);
+                setBVotes(data.bVotes);
             } else if (data.type === 'question-changed') {
                 setQuestion(data.question);
                 setVoteA(data.voteA);
@@ -56,20 +56,20 @@ const AskPage = () => {
             <div className="right">
                 <div className="yes">
                     <div className="count">
-                        {yesVotes}
+                        {aVotes}
                     </div>
                     <h1>{voteA}</h1>
                     <div className="figures">
-                        {Array.from({ length: yesVotes }, (_, index) => <img key={index} src="/images/figure.svg" width={50} />)}
+                        {Array.from({ length: aVotes }, (_, index) => <img key={index} src="/images/figure.svg" width={50} />)}
                     </div>
                 </div>
                 <div className="no">
                     <div className="count">
-                        {noVotes}
+                        {bVotes}
                     </div>
                     <h1>{voteB}</h1>
                     <div className="figures">
-                        {Array.from({ length: noVotes }, (_, index) => <img key={index} src="/images/figure.svg" width={50} />)}
+                        {Array.from({ length: bVotes }, (_, index) => <img key={index} src="/images/figure.svg" width={50} />)}
                     </div>
                 </div>
             </div>

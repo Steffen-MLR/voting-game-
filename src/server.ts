@@ -2,18 +2,18 @@ import { WebSocketServer, WebSocket } from 'ws';
 
 const wss = new WebSocketServer({ port: 8080 });
 
-let yesVotes = 0;
-let noVotes = 0;
+let aVotes = 0;
+let bVotes = 0;
 const clients = new Map<string, string>();
 
 function resetVotes() {
-    yesVotes = 0;
-    noVotes = 0;
+    aVotes = 0;
+    bVotes = 0;
     clients.clear();
 
     wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify({ type: 'votes', yesVotes, noVotes }));
+            client.send(JSON.stringify({ type: 'votes', aVotes, bVotes }));
             client.send(JSON.stringify({ type: 'votes-resetted' }));
         }
     });
@@ -22,7 +22,7 @@ function resetVotes() {
 wss.on('connection', (ws: WebSocket) => {
     console.log('New client connected');
 
-    ws.send(JSON.stringify({ type: 'votes', yesVotes, noVotes }));
+    ws.send(JSON.stringify({ type: 'votes', aVotes, bVotes }));
 
     ws.on('message', (message: string) => {
         const data = JSON.parse(message);
@@ -33,22 +33,22 @@ wss.on('connection', (ws: WebSocket) => {
 
             if (voteChanged) {
                 if (previousVote === 'yes') {
-                    yesVotes--;
+                    aVotes--;
                 } else if (previousVote === 'no') {
-                    noVotes--;
+                    bVotes--;
                 }
 
                 clients.set(data.clientId, data.vote);
 
                 if (data.vote === 'yes') {
-                    yesVotes++;
+                    aVotes++;
                 } else if (data.vote === 'no') {
-                    noVotes++;
+                    bVotes++;
                 }
 
                 wss.clients.forEach((client) => {
                     if (client.readyState === WebSocket.OPEN) {
-                        client.send(JSON.stringify({ type: 'votes', yesVotes, noVotes }));
+                        client.send(JSON.stringify({ type: 'votes', aVotes, bVotes }));
                     }
                 });
             }
