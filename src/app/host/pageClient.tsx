@@ -86,6 +86,14 @@ const HostPage = () => {
         const socketConnection = new WebSocket(lobbyCode ? `${process.env.NEXT_PUBLIC_WEB_SOCKET || 'wss://vote.sovd.it'}/api?lobby=${lobbyCode}` : `${process.env.NEXT_PUBLIC_WEB_SOCKET || 'wss://vote.sovd.it'}/api`);
         setSocket(socketConnection);
 
+        socketConnection.onopen = () => {
+            setInterval(() => {
+                if (socketConnection.readyState === WebSocket.OPEN) {
+                    socketConnection.send(JSON.stringify({ type: 'ping' }));
+                }
+            }, 10000);
+        }
+
         const data: string | null = searchParams.get('data');
         if (data) {
             setQuestions(JSON.parse(atob(data)));

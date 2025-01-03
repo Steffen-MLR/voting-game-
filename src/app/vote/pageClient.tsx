@@ -27,6 +27,14 @@ const VotePage = () => {
         const socketConnection = new WebSocket(`${process.env.NEXT_PUBLIC_WEB_SOCKET || 'wss://vote.sovd.it'}/api?lobby=${lobbyCode}&clientId=${localStorage.getItem('clientId')}`);
         setSocket(socketConnection);
 
+        socketConnection.onopen = () => {
+            setInterval(() => {
+                if (socketConnection.readyState === WebSocket.OPEN) {
+                    socketConnection.send(JSON.stringify({ type: 'ping' }));
+                }
+            }, 10000);
+        }
+
         socketConnection.onmessage = (event: MessageEvent) => {
             const data = JSON.parse(event.data);
             if (data.type === 'votes-resetted') {

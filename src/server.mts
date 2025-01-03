@@ -91,7 +91,9 @@ wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
             lobby = lobbies.get(lobbyCode || '');
         }
 
-        if (lobby) {
+        if (data.type === 'ping') {
+            ws.send(JSON.stringify(JSON.stringify({ tyep: 'pong' })));
+        } else if (lobby) {
             if (data.type === 'vote') {
                 console.log(lobbyCode, 'New vote from', data.clientId);
                 const previousVote = lobby.clientVotes.get(data.clientId);
