@@ -110,13 +110,7 @@ const HostPage = () => {
                 setLobby(data.lobby);
                 sessionStorage.setItem('lobby', data.lobby);
             } else if (data.type === 'current-question') {
-                console.log(data);
-                setQuestion({
-                    id: data.id,
-                    question: data.question,
-                    voteA: data.voteA,
-                    voteB: data.voteB
-                })
+                setQuestionId(data.id);
             }
         };
 
