@@ -41,12 +41,11 @@ const VotePage = () => {
                 setVoteB(data.voteB);
             } else if (data.type === 'my-vote') {
                 setSelectedSide(data.vote);
+            } else if (data.type === 'lobby-closed') {
+                socketConnection.close();
+                window.location.href = '/';
             }
         };
-
-        socketConnection.onclose = () => {
-            window.location.href = '/';
-        }
 
         return () => {
             socketConnection.close();

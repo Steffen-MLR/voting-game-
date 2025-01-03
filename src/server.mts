@@ -139,7 +139,7 @@ wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
 
                 clients.forEach((lobbyCode: string, client: WebSocket) => {
                     if (client.readyState === WebSocket.OPEN && lobbyCode === data.lobby) {
-                        client.close();
+                        client.send(JSON.stringify({ type: 'lobby-closed' }));
                     }
                 });
             }

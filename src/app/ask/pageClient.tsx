@@ -32,12 +32,11 @@ const AskPage = () => {
                 setQuestion(data.question);
                 setVoteA(data.voteA);
                 setVoteB(data.voteB);
+            } else if (data.type === 'lobby-closed') {
+                socketConnection.close();
+                window.location.href = '/';
             }
         };
-
-        socketConnection.onclose = () => {
-            window.location.href = '/';
-        }
 
         return () => {
             socketConnection.close();
