@@ -59,6 +59,19 @@ const HostPage = () => {
         setQuestion(q);
     }
 
+    function handleLobbyClose() {
+        const userConfirmed = window.confirm('Bist du sicher, dass du die Lobby schließen möchtest?');
+
+        if (userConfirmed) {
+            socket?.send(JSON.stringify({
+                type: 'close-lobby',
+                lobby: lobby
+            }));
+            sessionStorage.removeItem('lobby');
+            setLobby(undefined);
+        }
+    }
+
     useEffect(() => {
         setLocalQuestion({
             id: questionId,
@@ -149,7 +162,6 @@ const HostPage = () => {
                                 {questions[question.id + 1].question}
                             </>}
                         </div>
-                        
                     </div>
                     <div className="custom-question">
                         <h1>Custom Frage:</h1>
@@ -159,6 +171,9 @@ const HostPage = () => {
                             <input placeholder='Antwort B' value={customVoteB} onChange={(e) => setCustomVoteB(e.target.value)} />
                         </div>
                         <div className="button insert-custom-question" onClick={insertCustomQuestion}>Custom Frage einschieben</div>
+                    </div>
+                    <div className="close-lobby">
+                        <div className="button close-lobby-button" onClick={handleLobbyClose}>Lobby schließen</div>
                     </div>
                 </div>
             </div>

@@ -35,6 +35,10 @@ const AskPage = () => {
             }
         };
 
+        socketConnection.onclose = () => {
+            window.location.href = '/';
+        }
+
         return () => {
             socketConnection.close();
         };

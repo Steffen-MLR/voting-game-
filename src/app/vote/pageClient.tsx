@@ -44,6 +44,10 @@ const VotePage = () => {
             }
         };
 
+        socketConnection.onclose = () => {
+            window.location.href = '/';
+        }
+
         return () => {
             socketConnection.close();
         };

@@ -10,7 +10,7 @@ class LobbyState {
     bVotes: number;
     voteA: string | null;
     voteB: string | null;
-    clients: Map<string, string>;
+    clientVotes: Map<string, string>;
 
     constructor() {
         this.questionId = 0;
@@ -19,13 +19,13 @@ class LobbyState {
         this.bVotes = 0;
         this.voteA = null;
         this.voteB = null;
-        this.clients = new Map<string, string>();
+        this.clientVotes = new Map<string, string>();
     }
 
     resetVotes() {
         this.aVotes = 0;
         this.bVotes = 0;
-        this.clients = new Map<string, string>();
+        this.clientVotes = new Map<string, string>();
     }
 }
 
@@ -33,6 +33,7 @@ dotenv.config();
 
 const wss = new WebSocketServer({ port: 8080, path: '/api' });
 
+const clients = new Map<WebSocket, string>();
 const lobbies = new Map<string, LobbyState>();
 
 function generateLobbyCode(): string {
@@ -43,6 +44,9 @@ function generateLobbyCode(): string {
     while (counter < 6) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
       counter += 1;
+    }
+    if (lobbies.get(result)) {
+        return generateLobbyCode();
     }
     return result;
 }
@@ -69,11 +73,15 @@ wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
     console.log(lobbyCode, 'New client connected');
 
     if (lobby) {
-        if (clientId && lobby.clients.get(clientId)) {
-            ws.send(JSON.stringify({ type: 'my-vote', vote: lobby.clients.get(clientId)}))
+        if (clientId && lobby.clientVotes.get(clientId)) {
+            ws.send(JSON.stringify({ type: 'my-vote', vote: lobby.clientVotes.get(clientId)}));
         }
         ws.send(JSON.stringify({ type: 'votes', aVotes: lobby.aVotes, bVotes: lobby.bVotes }));
-        ws.send(JSON.stringify({ type: 'current-question', id: lobby.questionId, question: lobby.question, voteA: lobby.voteA, voteB: lobby.voteB }))
+        ws.send(JSON.stringify({ type: 'current-question', id: lobby.questionId, question: lobby.question, voteA: lobby.voteA, voteB: lobby.voteB }));
+    }
+
+    if (lobbyCode) {
+        clients.set(ws, lobbyCode);
     }
 
     ws.on('message', (message: string) => {
@@ -86,7 +94,7 @@ wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
         if (lobby) {
             if (data.type === 'vote') {
                 console.log(lobbyCode, 'New vote from', data.clientId);
-                const previousVote = lobby.clients.get(data.clientId);
+                const previousVote = lobby.clientVotes.get(data.clientId);
                 const voteChanged = !previousVote || previousVote !== data.vote;
     
                 if (voteChanged) {
@@ -96,7 +104,7 @@ wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
                         lobby.bVotes--;
                     }
     
-                    lobby.clients.set(data.clientId, data.vote);
+                    lobby.clientVotes.set(data.clientId, data.vote);
     
                     if (data.vote === 'a') {
                         lobby.aVotes++;
@@ -124,6 +132,14 @@ wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
                 wss.clients.forEach((client) => {
                     if (client.readyState === WebSocket.OPEN) {
                         client.send(JSON.stringify({ lobby: lobbyCode, type: 'question-changed', id: data.id, question: data.question, voteA: data.voteA, voteB: data.voteB }));
+                    }
+                });
+            } else if (data.type === 'close-lobby') {
+                lobbies.delete(data.lobby);
+
+                clients.forEach((lobbyCode: string, client: WebSocket) => {
+                    if (client.readyState === WebSocket.OPEN && lobbyCode === data.lobby) {
+                        client.close();
                     }
                 });
             }
