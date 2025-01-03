@@ -5,4 +5,4 @@ set -e
 npm start &
 
 # Start the additional WebSocket server
-node dist/server.js
+node dist/server.mjs

@@ -2,8 +2,10 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
       "noEmit": false,
-      "outDir": "dist"
+      "outDir": "dist",
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
     },
-    "include": ["src/server.ts"]
+    "include": ["src/server.mts"]
   }
   

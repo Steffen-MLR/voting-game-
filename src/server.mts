@@ -31,7 +31,7 @@ class LobbyState {
 
 dotenv.config();
 
-const wss = new WebSocketServer({ port: 8080 });
+const wss = new WebSocketServer({ port: 8080, path: '/api' });
 
 const lobbies = new Map<string, LobbyState>();
 
@@ -143,4 +143,4 @@ wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
     });
 });
 
-console.log(`WebSocket server is running on ${process.env.NEXT_PUBLIC_WEB_SOCKET}`);
+console.log(`WebSocket server is running on wss://vote.sovd.it/api`);
