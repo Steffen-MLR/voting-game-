@@ -51,7 +51,7 @@ const VotePage = () => {
                 setSelectedSide(data.vote);
             } else if (data.type === 'lobby-closed') {
                 socketConnection.close();
-                window.location.href = '/';
+                window.location.href = '/submit';
             }
         };
 

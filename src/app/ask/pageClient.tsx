@@ -42,7 +42,7 @@ const AskPage = () => {
                 setVoteB(data.voteB);
             } else if (data.type === 'lobby-closed') {
                 socketConnection.close();
-                window.location.href = '/';
+                window.location.href = '/submit';
             }
         };
 
