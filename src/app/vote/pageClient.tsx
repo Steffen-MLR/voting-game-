@@ -75,11 +75,11 @@ const VotePage = () => {
             <div className="down">
                 <div className="left" onClick={() => handleVote('a')}>
                     <h1>{voteA}</h1>
-                    <p style={{ display: selectedSide === 'a' ? 'block' : 'none' }}>Du hast Ja gewählt.</p>
+                    <p style={{ display: selectedSide === 'a' ? 'block' : 'none' }}>Du hast '{voteA}' gewählt.</p>
                 </div>
                 <div className="right" onClick={() => handleVote('b')}>
                     <h1>{voteB}</h1>
-                    <p style={{ display: selectedSide === 'b' ? 'block' : 'none' }}>Du hast Nein gewählt.</p>
+                    <p style={{ display: selectedSide === 'b' ? 'block' : 'none' }}>Du hast '{voteB}' gewählt.</p>
                 </div>
             </div>
         </div>
