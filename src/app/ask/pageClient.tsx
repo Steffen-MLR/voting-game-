@@ -15,7 +15,7 @@ const AskPage = () => {
     const [question, setQuestion] = useState<string>('');
     const [voteA, setVoteA] = useState<string>();
     const [voteB, setVoteB] = useState<string>();
-    const [started, setStarted] = useState<boolean>(sessionStorage.getItem(`${lobbyCode}-started`) === 'true' || false);
+    const [started, setStarted] = useState<boolean>(false);
 
     useEffect(() => {
         const socketConnection = new WebSocket(`${process.env.NEXT_PUBLIC_WEB_SOCKET || 'wss://vote.sovd.it'}/api?lobby=${lobbyCode}`);
@@ -25,15 +25,10 @@ const AskPage = () => {
             if (data.type === 'votes') {
                 setAVotes(data.aVotes);
                 setBVotes(data.bVotes);
-            } else if (data.type === 'question-changed') {
-                if (data.id === 1) {
+            } else if (data.type === 'question-changed' || data.type === 'current-question') {
+                if (data.id > 0) {
                     setStarted(true);
-                    sessionStorage.setItem(`${lobbyCode}-started`, 'true');
                 }
-                setQuestion(data.question);
-                setVoteA(data.voteA);
-                setVoteB(data.voteB);
-            } else if (data.type === 'current-question') {
                 setQuestion(data.question);
                 setVoteA(data.voteA);
                 setVoteB(data.voteB);
