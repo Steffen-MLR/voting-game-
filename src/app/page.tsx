@@ -8,6 +8,7 @@ export default function Home() {
 
   const handleSubmit = async () => {
     await saveInterest(name, email);
+    console.log('saved');
   }
 
   return (<div style={{
