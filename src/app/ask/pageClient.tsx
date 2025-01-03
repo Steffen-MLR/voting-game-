@@ -18,7 +18,7 @@ const AskPage = () => {
     const [started, setStarted] = useState<boolean>(sessionStorage.getItem(`${lobbyCode}-started`) === 'true' || false);
 
     useEffect(() => {
-        const socketConnection = new WebSocket(`wss://vote.sovd.it/api?lobby=${lobbyCode}`);
+        const socketConnection = new WebSocket(`${process.env.NEXT_PUBLIC_WEB_SOCKET || 'wss://vote.sovd.it'}/api?lobby=${lobbyCode}`);
 
         socketConnection.onmessage = (event: MessageEvent) => {
             const data = JSON.parse(event.data);
@@ -53,7 +53,7 @@ const AskPage = () => {
                         <QRCode 
                             size={400}
                             style={{border: '3px solid white'}}
-                            value={`${process.env.NEXT_PUBLIC_DOMAIN}/vote?lobby=${lobbyCode}`}
+                            value={`${process.env.NEXT_PUBLIC_DOMAIN || 'https://vote.sovd.it'}/vote?lobby=${lobbyCode}`}
                         />
                     </div>
                     <h1>{question}</h1>
@@ -82,7 +82,7 @@ const AskPage = () => {
                 {lobbyCode && <QRCode 
                     size={800}
                     style={{border: '3px solid white'}}
-                    value={`${process.env.NEXT_PUBLIC_DOMAIN}/vote?lobby=${lobbyCode}`}
+                    value={`${process.env.NEXT_PUBLIC_DOMAIN || 'https://vote.sovd.it'}/vote?lobby=${lobbyCode}`}
                 />}
             </>}
         </div>

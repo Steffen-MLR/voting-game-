@@ -24,7 +24,7 @@ const VotePage = () => {
             setClientId(newClientId);
         }
 
-        const socketConnection = new WebSocket(`wss://vote.sovd.it/api?lobby=${lobbyCode}&clientId=${localStorage.getItem('clientId')}`);
+        const socketConnection = new WebSocket(`${process.env.NEXT_PUBLIC_WEB_SOCKET || 'wss://vote.sovd.it'}/api?lobby=${lobbyCode}&clientId=${localStorage.getItem('clientId')}`);
         setSocket(socketConnection);
 
         socketConnection.onmessage = (event: MessageEvent) => {

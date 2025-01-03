@@ -70,7 +70,7 @@ const HostPage = () => {
 
     useEffect(() => {
         const lobbyCode:string | null = sessionStorage.getItem('lobby');
-        const socketConnection = new WebSocket(lobbyCode ? `wss://vote.sovd.it/api?lobby=${lobbyCode}` : `wss://vote.sovd.it/api`);
+        const socketConnection = new WebSocket(lobbyCode ? `${process.env.NEXT_PUBLIC_WEB_SOCKET || 'wss://vote.sovd.it'}/api?lobby=${lobbyCode}` : `${process.env.NEXT_PUBLIC_WEB_SOCKET || 'wss://vote.sovd.it'}/api`);
         setSocket(socketConnection);
 
         const data: string | null = searchParams.get('data');

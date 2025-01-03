@@ -44,9 +44,9 @@ const CreatePage = () => {
                     <QRCode
                         className="qr-code"
                         size={512}
-                        value={`${process.env.NEXT_PUBLIC_DOMAIN}/host?data=${btoa(JSON.stringify(questions))}`}
+                        value={`${process.env.NEXT_PUBLIC_DOMAIN || 'https://vote.sovd.it'}/host?data=${btoa(JSON.stringify(questions))}`}
                     />
-                    {process.env.NODE_ENV === 'development' && <a className="button" href={`${process.env.NEXT_PUBLIC_DOMAIN}/host?data=${btoa(JSON.stringify(questions))}`}>Create Game</a>}
+                    {process.env.NODE_ENV === 'development' && <a className="button" href={`${process.env.NEXT_PUBLIC_DOMAIN || 'https://vote.sovd.it'}/host?data=${btoa(JSON.stringify(questions))}`}>Create Game</a>}
                 </div>
                 <div className="right">
                     {Object.values(questions).map((q: Question) => {

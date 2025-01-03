@@ -143,4 +143,4 @@ wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
     });
 });
 
-console.log(`WebSocket server is running on wss://vote.sovd.it/api`);
+console.log(`WebSocket server is running on ${process.env.NEXT_PUBLIC_WEB_SOCKET || 'wss://vote.sovd.it'}/api`);
