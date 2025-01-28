@@ -3,12 +3,12 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState } from 'react';
 import './page.css';
 import { useSearchParams } from "next/navigation";
-import { Question } from '../create/pageClient';
+import { QrCodeData, Question } from '../create/pageClient';
 
 const HostPage = () => {
     const searchParams = useSearchParams();
 
-    const [questions, setQuestions] = useState<{[id: number]: Question}>({});
+    const [data, setData] = useState<QrCodeData>();
     const [questionId, setQuestionId] = useState<number>(0);
     const [question, setQuestion] = useState<Question | undefined>(undefined);
     const [aVotes, setAVotes] = useState<number>(0);
@@ -24,14 +24,16 @@ const HostPage = () => {
     };
 
     function goToNextQuestion() {
+        console.log(questionId);
+        if (!data) { return; }
         resetVotes();
         socket?.send(JSON.stringify({
             lobby,
             type: 'set-question',
             id: questionId + 1,
-            question: questions[questionId + 1].question,
-            voteA: questions[questionId + 1].voteA,
-            voteB: questions[questionId + 1].voteB
+            question: data.questions[questionId + 1].question,
+            voteA: data.questions[questionId + 1].voteA,
+            voteB: data.questions[questionId + 1].voteB
         }));
     }
 
@@ -61,23 +63,32 @@ const HostPage = () => {
 
     function handleLobbyClose() {
         const userConfirmed = window.confirm('Bist du sicher, dass du die Lobby schließen möchtest?');
-
+        console.log(socket);
         if (userConfirmed) {
-            socket?.send(JSON.stringify({
+            const content = JSON.stringify({
                 type: 'close-lobby',
-                lobby: lobby
-            }));
+                lobby: lobby,
+                data: {
+                    host: data?.host,
+                    image: data?.hostImage,
+                    email: data?.hostEmail
+                }
+            });
+            console.log(content);
+            const res = socket?.send(content);
+            console.log(res);
             sessionStorage.removeItem('lobby');
             setLobby(undefined);
         }
     }
 
     useEffect(() => {
+        if (!data) { return; }
         setLocalQuestion({
             id: questionId,
-            question: questions[questionId]?.question,
-            voteA: questions[questionId]?.voteA,
-            voteB: questions[questionId]?.voteB
+            question: data.questions[questionId]?.question,
+            voteA: data.questions[questionId]?.voteA,
+            voteB: data.questions[questionId]?.voteB
         });
     }, [questionId]);
 
@@ -96,7 +107,10 @@ const HostPage = () => {
 
         const data: string | null = searchParams.get('data');
         if (data) {
-            setQuestions(JSON.parse(atob(data)));
+            const base64 = data.replace(/-/g, "+")
+                .replace(/_/g, "/")
+                .padEnd(data.length + (4 - (data.length % 4)) % 4, "=");
+            setData(JSON.parse(Buffer.from(base64, 'base64').toString('utf-8')));
         }
         
         if (lobbyCode) {
@@ -134,7 +148,7 @@ const HostPage = () => {
                     <div className="button reset-votes" onClick={resetVotes}>
                         Votes zurücksetzen
                     </div>
-                    {(question?.id || 0) <= Object.keys(questions).length && 
+                    {data && (question?.id || 0) <= Object.keys(data.questions).length && 
                     <div className="button next-question" onClick={goToNextQuestion}>
                         {(question?.id || 0) > 0 ? 'Nächste Frage' : 'Start'}
                     </div> }
@@ -159,9 +173,9 @@ const HostPage = () => {
                             </>}
                         </div>
                         <div className="info-bottom">
-                            {question && questions[question.id + 1] && <>
+                            {data && question && data.questions[question.id + 1] && <>
                                 <h1>Nächste Frage</h1>
-                                {questions[question.id + 1].question}
+                                {data.questions[question.id + 1].question}
                             </>}
                         </div>
                     </div>

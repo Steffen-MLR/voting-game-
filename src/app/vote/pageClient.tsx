@@ -51,7 +51,8 @@ const VotePage = () => {
                 setSelectedSide(data.vote);
             } else if (data.type === 'lobby-closed') {
                 socketConnection.close();
-                window.location.href = '/submit';
+                const hostInfo = Buffer.from(JSON.stringify(data.data), 'utf8').toString('base64');
+                window.location.href = `/submit?data=${hostInfo}`;
             }
         };
 
@@ -75,11 +76,11 @@ const VotePage = () => {
             <div className="down">
                 <div className="left" onClick={() => handleVote('a')}>
                     <h1>{voteA}</h1>
-                    <p style={{ display: selectedSide === 'a' ? 'block' : 'none' }}>Du hast '{voteA}' gewählt.</p>
+                    <p style={{ display: selectedSide === 'a' ? 'block' : 'none' }}>Du hast &apos;{voteA}&apos; gewählt.</p>
                 </div>
                 <div className="right" onClick={() => handleVote('b')}>
                     <h1>{voteB}</h1>
-                    <p style={{ display: selectedSide === 'b' ? 'block' : 'none' }}>Du hast '{voteB}' gewählt.</p>
+                    <p style={{ display: selectedSide === 'b' ? 'block' : 'none' }}>Du hast &apos;{voteB}&apos; gewählt.</p>
                 </div>
             </div>
         </div>

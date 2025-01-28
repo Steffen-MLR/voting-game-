@@ -71,7 +71,7 @@ const AskPage = () => {
                         </div>
                         <h1>{voteA}</h1>
                         <div className="figures">
-                            {Array.from({ length: aVotes }, (_, index) => <Image key={index} src="/images/figure.svg" width={50} alt="Figure" />)}
+                            {Array.from({ length: aVotes }, (_, index) => <Image key={index} src="/images/figure.svg" width={50} height={50} alt="Figure" />)}
                         </div>
                     </div>
                     <div className="no">
@@ -80,7 +80,7 @@ const AskPage = () => {
                         </div>
                         <h1>{voteB}</h1>
                         <div className="figures">
-                            {Array.from({ length: bVotes }, (_, index) => <Image key={index} src="/images/figure.svg" width={50} alt="Figure" />)}
+                            {Array.from({ length: bVotes }, (_, index) => <Image key={index} src="/images/figure.svg" width={50} height={50} alt="Figure" />)}
                         </div>
                     </div>
                 </div>

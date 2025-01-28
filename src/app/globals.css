@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #1a1a1a;
+  --background: url("https://sovdcheck.sovd.it/assets/background-dark.7237b9d1.jpeg") !important;
+  --foreground: #ededed;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: url("https://sovdcheck.sovd.it/assets/background-dark.7237b9d1.jpeg");
+    --background: url("https://sovdcheck.sovd.it/assets/background-dark.7237b9d1.jpeg") !important;
     --foreground: #ededed;
   }
 }

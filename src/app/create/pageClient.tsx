@@ -2,9 +2,10 @@
 export const dynamic = 'force-dynamic';
 import QRCode from "react-qr-code";
 import './page.css';
-import { useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaCheck, FaPlus, FaRegCopy } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
+import { CopyButton } from "@/components/CopyButton";
 
 export type Question = {
     id: number;
@@ -13,14 +14,27 @@ export type Question = {
     voteB: string;
 }
 
+export type QrCodeData = {
+    questions: {[id: number]: Question};
+    host: string;
+    hostImage: string;
+    hostEmail: string;
+}
+
 const CreatePage = () => {
     const [questions, setQuestions] = useState<{[id: number]: Question}>({});
+    const [data, setData] = useState<QrCodeData | null>(null);
+    const [base64, setBase64] = useState<string>('');
+    const [host, setHost] = useState<string>('');
+    const [hostImage, setHostImage] = useState<string>('');
+    const [hostEmail, setHostEmail] = useState<string>('');
 
     function updateQuestion(id: number, updatedQuestion: Question) {
         setQuestions((prevQuestions) => ({
             ...prevQuestions,
             [id]: updatedQuestion, 
         }));
+        console.log(JSON.stringify(questions));
     }
 
     function addQuestion() {
@@ -37,16 +51,35 @@ const CreatePage = () => {
         });
     }
 
+    useEffect(() => {
+        setData({
+            questions,
+            host,
+            hostImage,
+            hostEmail
+        });
+
+        setBase64(Buffer.from(JSON.stringify(data), "utf-8").toString('base64').replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""));
+        
+    }, [questions, host, hostImage, hostEmail]);
+
     return (
         <>
             <div className="content">
                 <div className="left">
+                    <input type="text" placeholder="Vortragender" onChange={(e) => setHost(e.target.value)}/>
+                    <input type="text" placeholder="Vortragender Bild-Link" onChange={(e) => setHostImage(e.target.value)}/>
+                    <input type="text" placeholder="E-Mail" onChange={(e) => setHostEmail(e.target.value)}/>
                     <QRCode
                         className="qr-code"
-                        size={512}
-                        value={`${process.env.NEXT_PUBLIC_DOMAIN || 'https://vote.sovd.it'}/host?data=${btoa(JSON.stringify(questions))}`}
+                        value={`${process.env.NEXT_PUBLIC_DOMAIN || 'https://vote.sovd.it'}/host?data=${base64}`}
                     />
-                    {process.env.NODE_ENV === 'development' && <a className="button" href={`${process.env.NEXT_PUBLIC_DOMAIN || 'https://vote.sovd.it'}/host?data=${btoa(JSON.stringify(questions))}`}>Create Game</a>}
+                    <CopyButton
+                        tooltip="Link Kopieren"
+                        preClicked={<FaRegCopy color="white" size={30} />}
+                        postClicked={<FaCheck color="white" size={30} />}
+                        toCopy={`${process.env.NEXT_PUBLIC_DOMAIN || 'https://vote.sovd.it'}/host?data=${base64}`}
+                    />
                 </div>
                 <div className="right">
                     {Object.values(questions).map((q: Question) => {

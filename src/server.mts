@@ -98,16 +98,16 @@ wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
                 console.log(lobbyCode, 'New vote from', data.clientId);
                 const previousVote = lobby.clientVotes.get(data.clientId);
                 const voteChanged = !previousVote || previousVote !== data.vote;
-    
+
                 if (voteChanged) {
                     if (previousVote === 'a') {
                         lobby.aVotes--;
                     } else if (previousVote === 'b') {
                         lobby.bVotes--;
                     }
-    
+
                     lobby.clientVotes.set(data.clientId, data.vote);
-    
+
                     if (data.vote === 'a') {
                         lobby.aVotes++;
                     } else if (data.vote === 'b') {
@@ -130,18 +130,18 @@ wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
                 lobby.voteA = data.voteA;
                 lobby.voteB = data.voteB;
                 console.log(lobbyCode, 'Question set');
-    
+
                 wss.clients.forEach((client) => {
                     if (client.readyState === WebSocket.OPEN) {
                         client.send(JSON.stringify({ lobby: lobbyCode, type: 'question-changed', id: data.id, question: data.question, voteA: data.voteA, voteB: data.voteB }));
                     }
                 });
             } else if (data.type === 'close-lobby') {
-                lobbies.delete(data.lobby);
+                console.log(lobbyCode, 'lobby closed');
 
                 clients.forEach((lobbyCode: string, client: WebSocket) => {
                     if (client.readyState === WebSocket.OPEN && lobbyCode === data.lobby) {
-                        client.send(JSON.stringify({ type: 'lobby-closed' }));
+                        client.send(JSON.stringify({ type: 'lobby-closed', data: data.data }));
                     }
                 });
             }
