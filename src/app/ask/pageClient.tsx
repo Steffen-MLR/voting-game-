@@ -86,11 +86,14 @@ const AskPage = () => {
                     </div>
                 </div>
             </> : <>
-                {lobbyCode && <QRCode 
-                    size={800}
-                    style={{border: '3px solid white'}}
-                    value={`${process.env.NEXT_PUBLIC_DOMAIN || 'https://vote.sovd.it'}/vote?lobby=${lobbyCode}`}
-                />}
+                {lobbyCode && <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                    <QRCode
+                        size={700}
+                        style={{border: '3px solid white'}}
+                        value={`${process.env.NEXT_PUBLIC_DOMAIN || 'https://vote.sovd.it'}/vote?lobby=${lobbyCode}`}
+                    />
+                    <span style={{fontSize: '5rem'}}>{`${process.env.NEXT_PUBLIC_DOMAIN || 'https://vote.sovd.it'}/vote?lobby=${lobbyCode}`}</span>
+                </div>}
             </>}
         </div>
     </>);
