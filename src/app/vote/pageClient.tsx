@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import React, { useState, useEffect } from 'react';
 import './page.css';
 import { useSearchParams } from 'next/navigation';
+import { set } from 'mongoose';
 
 const VotePage = () => {
     const searchParams = useSearchParams();
@@ -14,10 +15,11 @@ const VotePage = () => {
     const [question, setQuestion] = useState<string>();
     const [voteA, setVoteA] = useState<string>();
     const [voteB, setVoteB] = useState<string>();
-    const [clientId, setClientId] = useState<string | null>(localStorage.getItem('clientId'));
-    localStorage.setItem('Bewirb dich jetzt!', 'Herzlichen Glückwunsch, du hast dir dein Vorstellungsgespräch gesichert. Mach hier von ein Screenshot und melde dich bei uns mit deiner Bewerbung (jobs@sovdwaer.de)');
-
+    const [clientId, setClientId] = useState<string | null>(null);
+    
     useEffect(() => {
+        setClientId(localStorage.getItem('clientId'));
+        localStorage.setItem('Bewirb dich jetzt!', 'Herzlichen Glückwunsch, du hast dir dein Vorstellungsgespräch gesichert. Mach hier von ein Screenshot und melde dich bei uns mit deiner Bewerbung (jobs@sovdwaer.de)');
         if (!clientId) {
             const newClientId = Math.random().toString(36).substring(2);
             localStorage.setItem('clientId', newClientId);
