@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import './page.css';
 import { useSearchParams } from 'next/navigation';
 import { set } from 'mongoose';
+import { GrStatusGoodSmall } from 'react-icons/gr';
 
 const VotePage = () => {
     const searchParams = useSearchParams();
@@ -16,6 +17,7 @@ const VotePage = () => {
     const [voteA, setVoteA] = useState<string>();
     const [voteB, setVoteB] = useState<string>();
     const [clientId, setClientId] = useState<string | null>(null);
+    const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'open' | 'closed'>('connecting');
     
     useEffect(() => {
         localStorage.setItem('Bewirb dich jetzt!', 'Herzlichen Glückwunsch, du hast dir dein Vorstellungsgespräch gesichert. Mach hier von ein Screenshot und melde dich bei uns mit deiner Bewerbung (jobs@sovdwaer.de)');
@@ -27,8 +29,10 @@ const VotePage = () => {
 
         const socketConnection = new WebSocket(`${process.env.NEXT_PUBLIC_WEB_SOCKET || 'wss://vote.sovd.it'}/api?lobby=${lobbyCode}&clientId=${localStorage.getItem('clientId')}`);
         setSocket(socketConnection);
+        setConnectionStatus('connecting');
 
         socketConnection.onopen = () => {
+            setConnectionStatus('open');
             setInterval(() => {
                 if (socketConnection.readyState === WebSocket.OPEN) {
                     socketConnection.send(JSON.stringify({ type: 'ping' }));
@@ -57,6 +61,14 @@ const VotePage = () => {
             }
         };
 
+        socketConnection.onclose = () => {
+            setConnectionStatus('closed');
+        };
+
+        socketConnection.onerror = () => {
+            setConnectionStatus('closed');
+        };
+
         return () => {
             socketConnection.close();
         };
@@ -71,6 +83,10 @@ const VotePage = () => {
 
     return (
         <div className="content">
+            <div className="connection-status" style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '5px', margin: '0.5rem'}}>
+                <GrStatusGoodSmall color={connectionStatus === 'open' ? '#4fc145' : '#c22f2f'} />
+                <span>{connectionStatus === 'open' ? 'verbunden' : 'getrennt (Seite neuladen, um sich zu verbinden)'}</span>
+            </div>
             <div className="up">
                 <h1>{waitingForHost ? 'Warte auf Host...' : question}</h1>
             </div>
