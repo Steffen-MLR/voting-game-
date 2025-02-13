@@ -52,15 +52,9 @@ const CreatePage = () => {
     }
 
     useEffect(() => {
-        setData({
-            questions,
-            host,
-            hostImage,
-            hostEmail
-        });
-
-        setBase64(Buffer.from(JSON.stringify(data), "utf-8").toString('base64').replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""));
-        
+        const updatedData: QrCodeData = { questions, host, hostImage, hostEmail };
+        setData(updatedData);
+        setBase64(Buffer.from(JSON.stringify(updatedData), "utf-8").toString('base64').replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""));
     }, [questions, host, hostImage, hostEmail]);
 
     return (
