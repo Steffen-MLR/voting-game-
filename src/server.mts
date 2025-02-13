@@ -76,8 +76,8 @@ wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
         if (clientId && lobby.clientVotes.get(clientId)) {
             ws.send(JSON.stringify({ type: 'my-vote', vote: lobby.clientVotes.get(clientId)}));
         }
-        ws.send(JSON.stringify({ type: 'votes', aVotes: lobby.aVotes, bVotes: lobby.bVotes }));
-        ws.send(JSON.stringify({ type: 'current-question', id: lobby.questionId, question: lobby.question, voteA: lobby.voteA, voteB: lobby.voteB }));
+        ws.send(JSON.stringify({ lobby: lobbyCode, type: 'votes', aVotes: lobby.aVotes, bVotes: lobby.bVotes }));
+        ws.send(JSON.stringify({ lobby: lobbyCode, type: 'current-question', id: lobby.questionId, question: lobby.question, voteA: lobby.voteA, voteB: lobby.voteB }));
     }
 
     if (lobbyCode) {
@@ -141,7 +141,7 @@ wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
 
                 clients.forEach((lobbyCode: string, client: WebSocket) => {
                     if (client.readyState === WebSocket.OPEN && lobbyCode === data.lobby) {
-                        client.send(JSON.stringify({ type: 'lobby-closed', data: data.data }));
+                        client.send(JSON.stringify({ lobby: lobbyCode, type: 'lobby-closed', data: data.data }));
                     }
                 });
             }

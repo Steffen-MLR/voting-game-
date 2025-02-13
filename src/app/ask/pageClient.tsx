@@ -33,7 +33,7 @@ const AskPage = () => {
             if (data.type === 'votes') {
                 setAVotes(data.aVotes);
                 setBVotes(data.bVotes);
-            } else if (data.type === 'question-changed' || data.type === 'current-question') {
+            } else if ((data.type === 'question-changed' || data.type === 'current-question') && data.lobby === lobbyCode) {
                 if (data.id > 0) {
                     setStarted(true);
                 }

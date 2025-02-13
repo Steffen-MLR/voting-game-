@@ -3,7 +3,6 @@ export const dynamic = 'force-dynamic';
 import React, { useState, useEffect } from 'react';
 import './page.css';
 import { useSearchParams } from 'next/navigation';
-import { set } from 'mongoose';
 import { GrStatusGoodSmall } from 'react-icons/gr';
 
 const VotePage = () => {
@@ -45,16 +44,16 @@ const VotePage = () => {
             if (data.type === 'votes-resetted') {
                 setSelectedSide('');
             }
-            else if (data.type === 'question-changed' || data.type === 'current-question') {
+            else if ((data.type === 'question-changed' || data.type === 'current-question') && data.lobby === lobbyCode) {
                 if (data.question) {
                     setWaitingForHost(false);
                 }
                 setQuestion(data.question);
                 setVoteA(data.voteA);
                 setVoteB(data.voteB);
-            } else if (data.type === 'my-vote') {
+            } else if (data.type === 'my-vote' && data.lobby === lobbyCode) {
                 setSelectedSide(data.vote);
-            } else if (data.type === 'lobby-closed') {
+            } else if (data.type === 'lobby-closed' && data.lobby === lobbyCode) {
                 socketConnection.close();
                 const hostInfo = Buffer.from(JSON.stringify(data.data), 'utf8').toString('base64');
                 window.location.href = `/submit?data=${hostInfo}&source=vote`;
@@ -76,7 +75,7 @@ const VotePage = () => {
 
     const handleVote = (side: string) => {
         if (socket && !waitingForHost) {
-            socket.send(JSON.stringify({ type: 'vote', vote: side, clientId: clientId }));
+            socket.send(JSON.stringify({ type: 'vote', vote: side, clientId: localStorage.getItem('clientId') }));
             setSelectedSide(side);
         }
     };
