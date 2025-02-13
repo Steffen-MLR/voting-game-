@@ -23,7 +23,6 @@ export type QrCodeData = {
 
 const CreatePage = () => {
     const [questions, setQuestions] = useState<{[id: number]: Question}>({});
-    const [data, setData] = useState<QrCodeData | null>(null);
     const [base64, setBase64] = useState<string>('');
     const [host, setHost] = useState<string>('');
     const [hostImage, setHostImage] = useState<string>('');
@@ -53,7 +52,6 @@ const CreatePage = () => {
 
     useEffect(() => {
         const updatedData: QrCodeData = { questions, host, hostImage, hostEmail };
-        setData(updatedData);
         setBase64(Buffer.from(JSON.stringify(updatedData), "utf-8").toString('base64').replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""));
     }, [questions, host, hostImage, hostEmail]);
 

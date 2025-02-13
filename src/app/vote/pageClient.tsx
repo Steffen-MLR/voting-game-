@@ -15,7 +15,6 @@ const VotePage = () => {
     const [question, setQuestion] = useState<string>();
     const [voteA, setVoteA] = useState<string>();
     const [voteB, setVoteB] = useState<string>();
-    const [clientId, setClientId] = useState<string | null>(null);
     const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'open' | 'closed'>('connecting');
     
     useEffect(() => {
@@ -23,7 +22,6 @@ const VotePage = () => {
         if (!localStorage.getItem('clientId')) {
             const newClientId = Math.random().toString(36).substring(2);
             localStorage.setItem('clientId', newClientId);
-            setClientId(newClientId);
         }
 
         const socketConnection = new WebSocket(`${process.env.NEXT_PUBLIC_WEB_SOCKET || 'wss://vote.sovd.it'}/api?lobby=${lobbyCode}&clientId=${localStorage.getItem('clientId')}`);

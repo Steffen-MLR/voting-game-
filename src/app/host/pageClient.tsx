@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import './page.css';
 import { useSearchParams } from "next/navigation";
 import { QrCodeData, Question } from '../create/pageClient';
-import { set } from 'mongoose';
 import { GrStatusGoodSmall } from "react-icons/gr";
 
 const HostPage = () => {
