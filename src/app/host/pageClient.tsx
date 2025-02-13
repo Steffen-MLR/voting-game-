@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import './page.css';
 import { useSearchParams } from "next/navigation";
 import { QrCodeData, Question } from '../create/pageClient';
+import { set } from 'mongoose';
+import { GrStatusGoodSmall } from "react-icons/gr";
 
 const HostPage = () => {
     const searchParams = useSearchParams();
@@ -18,6 +20,7 @@ const HostPage = () => {
     const [customVoteA, setCustomVoteA] = useState<string>("Ja");
     const [customVoteB, setCustomVoteB] = useState<string>("Nein");
     const [lobby, setLobby] = useState<string>();
+    const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'open' | 'closed'>('connecting');
 
     function resetVotes() {
         socket?.send(JSON.stringify({ type: 'reset-votes' }));
@@ -96,8 +99,10 @@ const HostPage = () => {
         const lobbyCode:string | null = sessionStorage.getItem('lobby');
         const socketConnection = new WebSocket(lobbyCode ? `${process.env.NEXT_PUBLIC_WEB_SOCKET || 'wss://vote.sovd.it'}/api?lobby=${lobbyCode}` : `${process.env.NEXT_PUBLIC_WEB_SOCKET || 'wss://vote.sovd.it'}/api`);
         setSocket(socketConnection);
+        setConnectionStatus('connecting');
 
         socketConnection.onopen = () => {
+            setConnectionStatus('open');
             setInterval(() => {
                 if (socketConnection.readyState === WebSocket.OPEN) {
                     socketConnection.send(JSON.stringify({ type: 'ping' }));
@@ -136,6 +141,14 @@ const HostPage = () => {
             }
         };
 
+        socketConnection.onclose = () => {
+            setConnectionStatus('closed');
+        };
+
+        socketConnection.onerror = () => {
+            setConnectionStatus('closed');
+        };
+
         return () => {
             socketConnection.close();
         };
@@ -156,6 +169,10 @@ const HostPage = () => {
                 </div>
                 <div className="bottom">
                     <div className="information">
+                        <div className="connection-status" style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '5px'}}>
+                            <GrStatusGoodSmall color={connectionStatus === 'open' ? '#4fc145' : '#c22f2f'} />
+                            <span>{connectionStatus === 'open' ? 'verbunden' : 'getrennt (Seite neuladen, um sich zu verbinden)'}</span>
+                        </div>
                         <div className="lobby-code">
                             <h1>Lobby Code</h1>
                             {lobby}
