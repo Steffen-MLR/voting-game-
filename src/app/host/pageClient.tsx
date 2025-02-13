@@ -148,10 +148,11 @@ const HostPage = () => {
                     <div className="button reset-votes" onClick={resetVotes}>
                         Votes zurücksetzen
                     </div>
-                    {data && (question?.id || 0) <= Object.keys(data.questions).length && 
-                    <div className="button next-question" onClick={goToNextQuestion}>
-                        {(question?.id || 0) > 0 ? 'Nächste Frage' : 'Start'}
-                    </div> }
+                    {((question && data?.questions[question?.id + 1]) || questionId === 0) && 
+                        <div className="button next-question" onClick={goToNextQuestion}>
+                            {(question?.id || 0) > 0 ? 'Nächste Frage' : 'Start'}
+                        </div>
+                    }
                 </div>
                 <div className="bottom">
                     <div className="information">
