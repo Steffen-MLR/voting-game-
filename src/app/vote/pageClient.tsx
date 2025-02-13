@@ -53,7 +53,7 @@ const VotePage = () => {
             } else if (data.type === 'lobby-closed') {
                 socketConnection.close();
                 const hostInfo = Buffer.from(JSON.stringify(data.data), 'utf8').toString('base64');
-                window.location.href = `/submit?data=${hostInfo}`;
+                window.location.href = `/submit?data=${hostInfo}&source=vote`;
             }
         };
 

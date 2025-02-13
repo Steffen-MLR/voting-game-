@@ -42,7 +42,8 @@ const AskPage = () => {
                 setVoteB(data.voteB);
             } else if (data.type === 'lobby-closed') {
                 socketConnection.close();
-                window.location.href = '/submit';
+                const hostInfo = Buffer.from(JSON.stringify(data.data), 'utf8').toString('base64');
+                window.location.href = `/submit?data=${hostInfo}&source=ask`;
             }
         };
 

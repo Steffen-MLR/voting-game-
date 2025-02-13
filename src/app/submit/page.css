@@ -58,11 +58,11 @@ h1:hover {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     width: 100%;
 }
 
 .contact-left {
-    width: 50%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -82,7 +82,6 @@ h1:hover {
 }
 
 .contact-right {
-    width: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -99,6 +98,37 @@ h1:hover {
     border-radius: 5px;
 }
 
+.circle-photo img {
+    object-fit: cover;
+}
+
+.circle-photo.ask img {
+    max-height: 20rem;
+    max-width: 20rem;
+    width: 20rem;
+    height: 20rem;
+}
+
+.contact-info {
+    text-align: left;
+}
+
+.contact-info.ask span.headline {
+    font-size: 5rem;
+}
+
+.contact-info.vote span.headline {
+    font-size: 2rem;
+}
+
+.contact-info.ask span {
+    font-size: 2rem;
+}
+
+.contact-info.vote span {
+    font-size: 1rem;
+}
+
 @media (max-width: 1024px) {
     h1 {
         font-size: 2.5rem;
@@ -108,8 +138,16 @@ h1:hover {
         gap: 1rem;
     }
 
-    .not-submitted img {
-        width: 50%;
+    .logo {
+        width: 100%;
+        display: flex;
+        flex: row;
+        justify-content: center;
+        margin-top: 5rem;
+    }
+
+    .logo img {
+        width: 100%;
     }
     
     .contact {
@@ -126,9 +164,9 @@ h1:hover {
         width: 100%;
     }
 
-    .contact-left img {
+    /* .contact-left img {
         width: 40%;
-    }
+    } */
 
     .contact-right input {
         min-width: 300px;
