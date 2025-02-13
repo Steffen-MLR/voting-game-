@@ -18,9 +18,8 @@ const VotePage = () => {
     const [clientId, setClientId] = useState<string | null>(null);
     
     useEffect(() => {
-        setClientId(localStorage.getItem('clientId'));
         localStorage.setItem('Bewirb dich jetzt!', 'Herzlichen Glückwunsch, du hast dir dein Vorstellungsgespräch gesichert. Mach hier von ein Screenshot und melde dich bei uns mit deiner Bewerbung (jobs@sovdwaer.de)');
-        if (!clientId) {
+        if (!localStorage.getItem('clientId')) {
             const newClientId = Math.random().toString(36).substring(2);
             localStorage.setItem('clientId', newClientId);
             setClientId(newClientId);
